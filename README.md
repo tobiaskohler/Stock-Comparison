@@ -47,7 +47,7 @@ After the plot is displayed, the user will be prompted to save the plot to the c
 ## Examples
 
 ### 1.
-The following code shows how to use the function to plot the "Close" prices of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 and 2020-12-31. The y-axis will be on a logarithmic scale.
+Plot the "Close" prices of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 and 2020-12-31. The y-axis will be on a logarithmic scale.
 
 ```Bash
 > init.py -s AAPL MSFT -b 2015-01-01 -e 2020-12-31 -l True
@@ -75,13 +75,13 @@ Save graph to the current folder? (y/n)
 
 
 By answering with `y` the .png and .html file will get saved in subfolder `output/`. 
-If output-folder does not exist, it will create it your current working directory.
+If output-folder does not exist, it will get created in your current working directory.
 
 ![Example 2 - Output (.png and .html available)](/AAPLMSFT_Close_2015-01-01-2020-12-31_log-True.png)
 
 ### 2.
 
-The following code shows how to use the function to plot the "Open" prices of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 and 2020-12-31. The y-axis will be on linear scale.
+Plot the "Open" prices of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 and 2020-12-31. The y-axis will be on linear scale.
 
 ```Bash
 > init.py -s AAPL MSFT -b 2015-01-01 -e 2020-12-31 -p Open -l False
