@@ -8,12 +8,13 @@ import traceback
 
 
 
-def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=False):
+def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=False, volume=False):
     
     """
     Overview:
-        Plots the stock prices for the specified symbols between the specified start and end dates using yfinance and Plotly.
-        The log_scale flag indicates if the y-axis should be on a logarithmic scale.
+        Plots the stock prices or stock volumes for the specified symbols between the specified start and end dates using yfinance and Plotly.
+        The log_scale flag indicates if the y-axis should be on a logarithmic scale (for price only).
+        The volume flag indicates if the volume should be plotted instead of the price.
         The price_type can be specified to choose the type of price to plot (e.g. 'Open', 'Close', 'High', 'Low').
         The function also offers the option to save the plot to the current directory.
         
@@ -28,35 +29,51 @@ def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=Fal
             Type of price to plot (e.g. 'Open', 'Close', 'High', 'Low')
         log_scale: bool
             Flag to indicate if y-axis should be on a logarithmic scale
+        volume: bool
+            Flag to indicate if volume should be plotted instead of price
             
     Returns:
         df: pd.DataFrame
-            DataFrame containing the price data for the specified symbols
+            DataFrame containing the price or volume data for the specified symbols
         str: str
             Error message if an error occurs
-
     """
 
     try: 
         if start and end:
-            stocks_data = {symbol: yf.Ticker(symbol).history(start=start, end=end)[price_type] for symbol in symbols}
+            stocks_data = {symbol: yf.Ticker(symbol).history(start=start, end=end) for symbol in symbols}
             
         else:
-            stocks_data = {symbol: yf.Ticker(symbol).history(period='1y')[price_type] for symbol in symbols}
+            stocks_data = {symbol: yf.Ticker(symbol).history(period='1y') for symbol in symbols}
         
-        df = pd.DataFrame(stocks_data)
+        if volume:
+            data = {symbol: stocks_data[symbol]["Volume"] for symbol in symbols}
+            title = "Stock Volume"
+            yaxis_title = "Volume"
+        else:
+            data = {symbol: stocks_data[symbol][price_type] for symbol in symbols}
+            title=f'Comparison of {price_type} prices'
+            yaxis_title = "Indexed Price"
+        
+        df = pd.DataFrame(data)
+        
         df.dropna(inplace=True)
+            
         print(df)
         
-        for col in df.columns:
-            df[col] = df[col] / df[col].iloc[0] * 100
+        if not volume:
+            for col in df.columns:
+                df[col] = df[col] / df[col].iloc[0] * 100
         
         fig = px.line(df, height=600, width=600, labels={'Date': 'Date', 'Y': 'Dollars USD'}, template="plotly_white")
         
-        title=f'Comparison of {price_type} prices'
-        subtitle = f'(100={start})'
+        if not volume:
+            subtitle = f'(100={start})'
+        else:
+            subtitle = f'{start}/{end}'
         
         fig.update_layout(title_x=0.5, hovermode="x unified")
+        
         fig.update_layout(
         title=go.layout.Title(
             text=f"<b>{title}</b><br><sup>{subtitle}</sup>",
@@ -65,17 +82,17 @@ def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=Fal
         ),
             yaxis=go.layout.YAxis(
             title=go.layout.yaxis.Title(
-                text="Indexed Price"
+                text=yaxis_title
                 )
             )
         )
         
         if log_scale:
-            fig.update_layout(yaxis_type="log", yaxis=dict(title="Indexed Price (log scale)"))
+            fig.update_layout(yaxis_type="log")
 
         fig.show()
         
-        save = input("Save graph to the current folder? (y/n)")
+        # save = input("Save graph to the current folder? (y/n)")
 
         if save.lower() == 'y':
             
@@ -98,7 +115,7 @@ def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=Fal
         print(error_msg)
         
         return error_msg
-    
-    
+
+
 if __name__ == '__main__':
-    plot_stocks(["AAPL", "MSFT", "AMZN", "GOOG"], start="2020-01-01", end="2020-12-31", price_type="Open", log_scale=True)
+    plot_stocks(['AAPL', 'MSFT', 'AMZN'], start='2022-01-01', end='2022-12-31', log_scale=True, volume=True)
