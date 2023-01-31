@@ -1,6 +1,6 @@
 # Stock Price Plotting CLI
 
-This CLI allows users to plot the daily prices of specified stocks between a specified start and end date using `yfinance` and `plotly.express`. The logarithmic scale for the y-axis and type of price to plot (e.g. 'Open', 'Close', 'High', 'Low') can also be specified.
+This CLI allows users to plot the daily prices or volumes of specified assets (stocks, crypto, indicies, currencies, etc.) between a specified start and end date using `yfinance` and `plotly.express`. The logarithmic scale for the y-axis and type of price to plot (e.g. 'Open', 'Close', 'High', 'Low') can also be specified.
 
 ## Usage
 
@@ -12,10 +12,12 @@ The main function `plot_stocks()` accepts the following arguments:
   - Start date for the price data
 - `end`: str (yyyy-mm-dd)
   - End date for the price data
-- `price_type`: str (default: "Close")
+- `price-type`: str (default: "Close")
   - Type of price to plot (e.g. 'Open', 'Close', 'High', 'Low')
-- `log_scale`: bool (default: False)
+- `log-scale`: bool (default: False)
   - Flag to indicate if y-axis should be on a logarithmic scale
+- `volume`: bool (default: False)
+  - Flag to indicate if volume should be plotted **instead of price**
 
 The function returns a DataFrame containing the price data for the specified symbols and an error message string if an error occurs.
 
@@ -34,10 +36,12 @@ options:
   -b START, --start START
                         Start date in YYYY-MM-DD format
   -e END, --end END     End date in YYYY-MM-DD format
-  -p PRICE_TYPE, --price_type PRICE_TYPE
+  -p PRICE_TYPE, --price-type PRICE_TYPE
                         Price type (Open, High, Low, Close)
-  -l LOG_SCALE, --log_scale LOG_SCALE
+  -l LOG_SCALE, --log-scale LOG_SCALE
                         Use logarithmic scale on the y-axis (True or False)
+  -v VOLUME, --volume VOLUME
+                        Plot daily volume instead of price (True or False). Works with LOG_SCALE
 ```
 
 ## Saving the Plot
@@ -88,3 +92,13 @@ Plot the "Open" prices of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 a
 ```
 
 ![Example 2 - Output (.png and .html available)](/AAPLMSFT_Open_2015-01-01-2020-12-31_log-False.png)
+
+
+### 3.
+
+Plot the daily trading volume of Apple (AAPL) and Microsoft (MSFT) between 2020-01-01 and 2020-12-31. The y-axis will be on linear scale.
+
+```Bash
+> init.py -s AAPL MSFT -b 2021-01-01 -e 2022-01-01 -v True
+```
+![Example 3 - Output (.png and .html available)](/AAPLMSFT_Close_2015-01-01-2020-12-31_log-False_vol-True.png)

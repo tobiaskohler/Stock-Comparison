@@ -108,8 +108,8 @@ def plot_stocks(symbols, start=None, end=None, price_type="Close", log_scale=Fal
             if not save_dir:
                 os.makedirs(folder_name)
                 
-            fig.write_image(f"{current_dir}/{folder_name}/{symbols_string}_{price_type}_{start}-{end}_log-{log_scale}.png")
-            fig.write_html(f"{current_dir}/{folder_name}/{symbols_string}_{price_type}_{start}-{end}_log-{log_scale}.html")
+            fig.write_image(f"{current_dir}/{folder_name}/{symbols_string}_{price_type}_{start}-{end}_log-{log_scale}_vol-{volume}.png")
+            fig.write_html(f"{current_dir}/{folder_name}/{symbols_string}_{price_type}_{start}-{end}_log-{log_scale}_vol-{volume}.html")
             print(f"Image saved to {current_dir}/{folder_name}.")
             
         return df
